@@ -13,36 +13,27 @@ import { TranslateImageInput } from './TranslateImageInput'
 export function Image () {
   const [from, setFrom] = useState(FROM_LANGUAGES[0])
   const [to, setTo] = useState(TO_LANGUAGES[0])
-  const [file, setFile] = useState<File | null>(null)
 
-  const { completion, complete, isLoading } = useCompletion({
-    api: '/api/translate-image',
-    body: { from, to, image: file }
-  })
+  // 1. Create state to store the file
+  // 2. Create handleDrop function to set the file
+  // 3. Create `image` variable to show the image
+  // 4. Pass all the necessary props to TranslateImageInput
+  // 5. Add `onClose` to remove the file on clicking X
 
-  const handleDrop = async (acceptedFiles: File[]) => {
-    setFile(acceptedFiles[0])
-  }
+  // 6. Add useCompletion hook to call to `/api/translate-image`
+  // 7. useEffect: `complete` on changing the file, from or to fields
+  // 7a. Transform image to base64 and pass it to `complete` body
+  // 8. Pass `completion` and `isLoading` to TranslateTextOutput
 
-  useEffect(() => {
-    async function run () {
-      if (file === null) return
-      const image = await fileToBase64(file)
-      complete('', { body: { from, to, image } })
-    }
-
-    run()
-  }, [from, to, file])
-
-  const image = file != null ? URL.createObjectURL(file) : null
+  const image = null
 
   return (
     <>
       <LanguageSelector from={from} setFrom={setFrom} to={to} setTo={setTo} />
 
       <div className='flex'>
-        <TranslateImageInput onDrop={handleDrop} image={image} onClose={() => { setFile(null) }} />
-        <TranslateTextOutput result={completion} isLoading={isLoading} />
+        <TranslateImageInput image={image} />
+        <TranslateTextOutput />
       </div>
     </>
   )

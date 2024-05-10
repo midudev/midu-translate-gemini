@@ -22,28 +22,13 @@ export async function POST (req: Request) {
 
   const { from, to, image } = output
 
-  // Get a language model
-  const model = google('models/gemini-pro-vision')
+  // 1. Get google model gemini-pro-vision
+  // check available models:
+  // https://ai.google.dev/gemini-api/docs/models/gemini?hl=es-419
 
-  const formattedImage = base64ToUint8Array(image)
+  // 2. Transform image base64 to ArrayBuffer Uint8
 
-  // Call the language model with the prompt
-  const result = await streamText({
-    model,
-    messages: [
-      {
-        role: 'user',
-        content: [
-          { type: 'text', text: `Translate the following text from ${from} to ${to}. If "Auto" is the from language, then try to detect the original language automatically after reading the text from the image. If no text is detected in the image, return an empty string. Always return directly the translated text. Do not include the prompt in the response.` },
-          { type: 'image', image: formattedImage }
-        ]
-      }
-    ],
-    maxTokens: 4096,
-    temperature: 0.7,
-    topP: 0.4
-  })
+  // 3. Call streamText, passing the model, imageArray, from and to and get the response
 
-  // Respond with a streaming response
-  return result.toAIStreamResponse()
+  // 4. Response with stream response
 }
